@@ -9,7 +9,6 @@ pip install -r requirements.txt
 ```flask run```
 
 ### Dot-Env Format (.env)
-```FLASK_APP=app.py
-FLASK_SWAGGER_URL='/api/docs'
+```FLASK_SWAGGER_URL='/api/docs'
 FLASK_API_URL='/static/swagger.json'
 ```
