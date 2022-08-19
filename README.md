@@ -1,6 +1,6 @@
 # flask-swagger-ui
 
-* - Used for API documentation
+- Used for API documentation
 
 ### Installing Packages
 pip install -r requirements.txt
