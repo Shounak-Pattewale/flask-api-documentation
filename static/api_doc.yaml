@@ -247,7 +247,7 @@ components:
           type: string
           example: My Concept Restaurant
         restaurantType:
-          description: Type of a pet
+          description: Type of a restaurant
           type: string
   requestBodies:
     Restaurant:
