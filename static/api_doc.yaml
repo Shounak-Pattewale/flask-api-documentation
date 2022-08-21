@@ -1,0 +1,270 @@
+openapi: 3.0.0
+servers:
+  - url: /api
+    description: Default server
+info:
+  description: |
+    This is a sample server built with Flask to test API documentation using Swagger and ReDoc.
+
+    # Introduction
+    **Lorem ipsum** dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+  version: 1.0.0
+  title: API Test Docs
+externalDocs:
+  description: Github repo.
+  url: "https://github.com/Shounak-Pattewale/flask-swagger-ui"
+tags:
+  - name: Ping
+    description: Ping the system
+  - name: Restaurants
+    description: Access to Restaurants
+  - name: Menus
+    description: Access to menus
+x-tagGroups:
+  - name: General
+    tags:
+      - Ping
+  - name: My APIs
+    tags:
+      - Restaurants
+      - Menus
+
+paths:
+  /ping:
+    get:
+      tags:
+        - Ping
+      summary: Ping the system
+      description: Ping the system to check connectivity
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: pong
+        "404":
+          description: Not found
+        "500":
+          description: Something went wrong
+
+  /restaurant:
+    put:
+      tags:
+        - Restaurants
+      summary: Update restaurant details
+      description: Here you can update restaurant details
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: Details updated successfully
+                  restaurantId:
+                    type: integer
+                    example: 123
+        "404":
+          description: Not found
+        "500":
+          description: Something went wrong
+      x-codeSamples:
+        - lang: "cURL"
+          source: |
+            curl --location --request POST 'https://microservice-test2.herokuapp.com/api/user' \
+            --header 'Content-Type: application/json' \
+            --data-raw '{
+              "restaurantId": 1234,
+              "restaurantName": "My Concept Restaurant",
+              "restaurantType": "Fine Dining",
+              "serviceType": [
+                "delivery, dine-in"
+              ]
+            }'
+
+        - lang: "Python"
+          source: |
+            import requests
+            import json
+
+            url = "https://microservice-test2.herokuapp.com/api/user"
+
+            payload = json.dumps({
+              "restaurantId": 1234,
+              "restaurantName": "My Concept Restaurant",
+              "restaurantType": "Fine Dining",
+              "serviceType": [
+                "delivery, dine-in"
+              ]
+            })
+            headers = {
+              'Content-Type': 'application/json'
+            }
+            response = requests.request("POST", url, headers=headers, data=payload)
+            print(response.text)
+
+        - lang: PHP
+          source: |
+            <?php
+            $client = new Client();
+            $headers = [
+              'Content-Type' => 'application/json'
+            ];
+            $body = '{
+              "restaurantId": 1234,
+              "restaurantName": "My Concept Restaurant",
+              "restaurantType": "Fine Dining",
+              "serviceType": [
+                "delivery, dine-in"
+              ]
+            }';
+            $request = new Request('POST', 'https://microservice-test2.herokuapp.com/api/user', $headers, $body);
+            $res = $client->sendAsync($request)->wait();
+            echo $res->getBody();
+
+      requestBody:
+        $ref: "#/components/requestBodies/Restaurant"
+
+  "/menu/{menuId}":
+    get:
+      tags:
+        - Menus
+      summary: Get menu to the store
+      description: Here you can get menu details
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    example: Menu unavailable, restaurant is temporarily closed
+        "404":
+          description: Not found
+        "500":
+          description: Something went wrong
+
+components:
+  schemas:
+    Id:
+      type: integer
+      format: int64
+    FineDining:
+      description: A representation of a Fine Dining Restaurant
+      allOf:
+        - $ref: "#/components/schemas/Restaurant"
+        - type: object
+          properties:
+            serviceType:
+              type: array
+              description: The type of service provided by the restaurant
+              items:
+                type: string
+                default: dine-in
+                example: delivery, dine-in
+                enum:
+                  - delivery
+                  - dine-in 
+          required:
+            - serviceType
+    CafeBistro:
+      description: A representation of a Cafe-Bistro Restaurant
+      allOf:
+        - $ref: "#/components/schemas/Restaurant"
+        - type: object
+          properties:
+            serviceType:
+              type: array
+              description: The type of service provided by the restaurant
+              items:
+                type: string
+                default: dine-in
+                example: delivery, dine-in, curb-side
+                enum:
+                  - delivery
+                  - dine-in
+                  - curb-side
+                  - drive-thur
+          required:
+            - serviceType
+    GhostKitchen:
+      description: A representation of a Ghost Kitchen Restaurant
+      allOf:
+        - $ref: "#/components/schemas/Restaurant"
+        - type: object
+          properties:
+            serviceType:
+              type: array
+              description: The type of service provided by the restaurant
+              items:
+                type: string
+                default: delivery
+                example: delivery, curb-side
+                enum:
+                  - delivery
+                  - curb-side
+          required:
+            - serviceType
+    Restaurant:
+      type: object
+      required:
+        - restaurantName
+        - restaurantId
+      discriminator:
+        propertyName: restaurantType
+        mapping:
+          Fine Dining: "#/components/schemas/FineDining"
+          Cafe Bistro: "#/components/schemas/CafeBistro"
+          Ghost Kitchen: "#/components/schemas/GhostKitchen"
+      properties:
+        restaurantId:
+          example: 1234
+          externalDocs:
+            description: "Find more info here"
+            url: "https://example.com"
+          description: Restaurant ID
+          allOf:
+            - $ref: "#/components/schemas/Id"
+        restaurantName:
+          description: The name given to a restaurant
+          type: string
+          example: My Concept Restaurant
+        restaurantType:
+            description: Type of a pet
+            type: string
+  requestBodies:
+    Restaurant:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - description: My Restaurant
+                title: ABC
+              - $ref: "#/components/schemas/Restaurant"
+      description: Menu object that needs to be added to the store
+      required: true
+    MenuName:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - description: My Restaurant
+                title: ABC
+              - $ref: "#/components/schemas/Restaurant"
+      description: Menu object that needs to be added to the store
+      required: true

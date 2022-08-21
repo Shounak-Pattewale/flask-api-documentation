@@ -1,25 +1,24 @@
 from flask import Flask
-from flask_swagger_ui import get_swaggerui_blueprint
 from api import api
+from swaggerConfig import swaggerBlueprint
 
 app = Flask(__name__)
-app.config.from_prefixed_env()      # Loading variables from .env having "FLASK_" as prefix
+
+# Loading variables from .env having "FLASK_" as prefix
+app.config.from_prefixed_env()
+
+# Swagger documentation endpoint
+SWAGGER_URL = app.config['SWAGGER_URL']
+
+# Swagger configuration file path
+API_URL = app.config['API_URL']
 
 
-# Swagger configurations
-SWAGGER_URL = app.config['SWAGGER_URL']         # Swagger documentation endpoint
-API_URL = app.config['API_URL']             # Swagger configuration file path
-SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={
-        'app_name': "API Doc"
-    }
-)
+# Registering blueprints
+app.register_blueprint(swaggerBlueprint(
+    SWAGGER_URL, API_URL), url_prefix=SWAGGER_URL)
 
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)     # Registering swagger blueprint
-app.register_blueprint(api)     # Registering api blueprint
+app.register_blueprint(api)
 
-
-if __name__=='__main__':
+if __name__ == '__main__':
     app.run()
