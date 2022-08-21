@@ -83,7 +83,7 @@ paths:
       x-codeSamples:
         - lang: "cURL"
           source: |
-            curl --location --request POST 'https://microservice-test2.herokuapp.com/api/user' \
+            curl --location --request PUT 'https://flask-docs-swagger-ui.herokuapp.com/api/restaurant' \
             --header 'Content-Type: application/json' \
             --data-raw '{
               "restaurantId": 1234,
@@ -99,7 +99,7 @@ paths:
             import requests
             import json
 
-            url = "https://microservice-test2.herokuapp.com/api/user"
+            url = "https://flask-docs-swagger-ui.herokuapp.com/api/restaurant"
 
             payload = json.dumps({
               "restaurantId": 1234,
@@ -112,7 +112,9 @@ paths:
             headers = {
               'Content-Type': 'application/json'
             }
-            response = requests.request("POST", url, headers=headers, data=payload)
+
+            response = requests.request("PUT", url, headers=headers, data=payload)
+
             print(response.text)
 
         - lang: PHP
@@ -130,7 +132,7 @@ paths:
                 "delivery, dine-in"
               ]
             }';
-            $request = new Request('POST', 'https://microservice-test2.herokuapp.com/api/user', $headers, $body);
+            $request = new Request('PUT', 'https://flask-docs-swagger-ui.herokuapp.com/api/restaurant', $headers, $body);
             $res = $client->sendAsync($request)->wait();
             echo $res->getBody();
 
@@ -179,7 +181,7 @@ components:
                 example: delivery, dine-in
                 enum:
                   - delivery
-                  - dine-in 
+                  - dine-in
           required:
             - serviceType
     CafeBistro:
@@ -245,8 +247,8 @@ components:
           type: string
           example: My Concept Restaurant
         restaurantType:
-            description: Type of a pet
-            type: string
+          description: Type of a pet
+          type: string
   requestBodies:
     Restaurant:
       content:
